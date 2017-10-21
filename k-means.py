@@ -9,7 +9,7 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 df = pd.read_csv("iris.csv")
 data = df.values
 numberOfData=data.shape[0]
-convergence_threshold=0.01
+convergence_threshold=0.0001
 
 def addRand2List(list):
     rand=random.randint(0,numberOfData-1)
@@ -50,7 +50,8 @@ def ImprovedInitialSelect(k):
             distance.append(getDistance(data[first],tmp_data[i]))
             if j>=1:
                 for k in range(j):
-                    distance[i]+getDistance(Rp_matrix[k+1],tmp_data[i])
+                    distance[i]=distance[i]+getDistance(Rp_matrix[k+1],tmp_data[i])
+
         pattern_index=distance.index(max(distance))
         Rp_matrix.append(tmp_data[pattern_index,:])
         tmp_data=np.delete(tmp_data,pattern_index,axis=0)
@@ -181,30 +182,39 @@ def plotscatter(k):
     new_centre=getCenter(old_centre)
     convergence=calcConvergence(old_centre,new_centre)
     old_centre=new_centre
-
+    convergence_count = 1
     while convergence>convergence_threshold:
         new_centre=getCenter(old_centre)
         convergence=calcConvergence(old_centre,new_centre)
         old_centre=new_centre
+        convergence_count=convergence_count+1
 
     fig = plt.figure(figsize=(15,4.5))
     ax1 = fig.add_subplot(121, projection='3d')
     ax2 = fig.add_subplot(122, projection='3d')
     plotrandom(new_centre,ax1)
+    print('収束するまでの回数=',convergence_count)
 
-    centre=getCenter(ImprovedInitialSelect(k))
+
+    initial=ImprovedInitialSelect(k)
+    print(initial)
+    old_centre=getCenter(initial)
     new_centre=getCenter(old_centre)
     convergence=calcConvergence(old_centre,new_centre)
     old_centre=new_centre
-
+    convergence_count = 1
     while convergence>convergence_threshold:
         new_centre=getCenter(old_centre)
         convergence=calcConvergence(old_centre,new_centre)
         old_centre=new_centre
-        
-    plotimproved(new_centre,ax2)
-    plt.show()
+        convergence_count=convergence_count+1
 
+
+    print('収束するまでの回数=',convergence_count)
+    plotimproved(new_centre,ax2)
+    filename = "../picture/"+str(k)+".png"
+    plt.savefig(filename)
+    plt.show()
 
 
 

@@ -9,6 +9,7 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 df = pd.read_csv("iris.csv")
 data = df.values
 numberOfData=data.shape[0]
+convergence_threshold=0.01
 
 def addRand2List(list):
     rand=random.randint(0,numberOfData-1)
@@ -113,6 +114,13 @@ def getCenter(k_list):
     new_k_list=np.array(new_k_list)
     return new_k_list
 
+def calcConvergence(old_list,new_list):
+    variation=0
+    for i in range(old_list.shape[0]):
+        variation= variation+ getDistance(old_list[i],new_list[i])
+    return variation
+
+
 def plotrandom(k_list,ax):
     tmp_data=clustering(k_list)
     hot = plt.get_cmap('hot')
@@ -169,20 +177,34 @@ def plotimproved(k_list,ax):
 
 def plotscatter(k):
 
-    centre=getCenter(getInitalRepresentative(k))
-    #TODO 収束の判定
-    for i in range(4):
-        centre=getCenter(centre)
+    old_centre=getCenter(getInitalRepresentative(k))
+    new_centre=getCenter(old_centre)
+    convergence=calcConvergence(old_centre,new_centre)
+    old_centre=new_centre
+
+    while convergence>convergence_threshold:
+        new_centre=getCenter(old_centre)
+        convergence=calcConvergence(old_centre,new_centre)
+        old_centre=new_centre
+
     fig = plt.figure(figsize=(15,4.5))
     ax1 = fig.add_subplot(121, projection='3d')
     ax2 = fig.add_subplot(122, projection='3d')
-    plotrandom(centre,ax1)
+    plotrandom(new_centre,ax1)
+
     centre=getCenter(ImprovedInitialSelect(k))
-    #TODO 収束の判定
-    for i in range(4):
-        centre=getCenter(centre)
-    plotimproved(centre,ax2)
+    new_centre=getCenter(old_centre)
+    convergence=calcConvergence(old_centre,new_centre)
+    old_centre=new_centre
+
+    while convergence>convergence_threshold:
+        new_centre=getCenter(old_centre)
+        convergence=calcConvergence(old_centre,new_centre)
+        old_centre=new_centre
+        
+    plotimproved(new_centre,ax2)
     plt.show()
+
 
 
 

@@ -46,6 +46,7 @@ range_horsepower = np.arange(50,225,30)
 mesh_weight , mesh_horsepower = np.meshgrid(range_weight , range_horsepower )
 mesh_mpg = omega[1]*mesh_horsepower+omega[2]*mesh_weight+omega[0]
 ax.plot_wireframe(mesh_weight,mesh_horsepower,mesh_mpg)
+plt.title("linear regression")
 plt.show()
 
 

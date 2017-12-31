@@ -23,7 +23,7 @@ def main(layer_num):
 
     network = NLayerNet(layer_num, input_size = 784, hidden_size = 50, output_size = 10)
 
-    iters_num = 10000  # 繰り返しの回数を適宜設定する
+    iters_num = 1000  # 繰り返しの回数を適宜設定する
     train_size = x_train.shape[0]
     batch_size = 100
     learning_rate = 0.1
@@ -50,8 +50,8 @@ def main(layer_num):
 
         # パラメータの更新
         for i in range(layer_num):
-            network.weights -= learning_rate * weight_grads
-            network.bias -= learning_rate * bias_grads
+            network.weights[i] -= learning_rate * weight_grads[i]
+            network.bias[i] -= learning_rate * bias_grads[i]
 
         loss = network.loss(x_batch, t_batch)
         train_loss_list.append(loss)
@@ -76,4 +76,5 @@ def main(layer_num):
 
 if __name__ == '__main__':
     layer_num = int(input("Input number of layers"))
+    print("layer_num:",layer_num)
     main(layer_num)

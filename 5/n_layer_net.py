@@ -13,7 +13,7 @@ from gradient import numerical_gradient
 
 class NLayerNet:
 
-    def __init__(self, layer_num, input_size, output_size, hidden_size = 100, weight_init_std = 0.01):
+    def __init__(self, layer_num, input_size, output_size, hidden_size, weight_init_std = 0.01):
         # 重みの初期化
         self.layer_num =layer_num
         self.input_size = input_size
@@ -56,13 +56,16 @@ class NLayerNet:
         :param x:input_size matrix
         :return: output_size matrix
         """
-        input = x
-        for i in range(self.layer_num):
-            output = np.dot(input, self.weights[i]) + self.bias[i]
-            input = sigmoid(output)
+        input_matrix = x
+        for i in range(self.layer_num-1):
+            output = np.dot(input_matrix, self.weights[i]) + self.bias[i]
+            # print("iteration", output.shape)
+            input_matrix = sigmoid(output)
 
-        output = np.dot(input, self.weights[-1])+self.bias[-1]
-        y = softmax(ouput)
+        # print(input_matrix.shape)
+        dot_product = np.dot(input_matrix, self.weights[-1])
+        output = dot_product + self.bias[-1]
+        y = softmax(output)
         return y
 
     def loss(self, x, t):

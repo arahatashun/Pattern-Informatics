@@ -18,6 +18,7 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."""
 import numpy as np
+from numba.decorators import jit
 
 
 def _numerical_gradient_1d(f, x):
@@ -49,7 +50,7 @@ def numerical_gradient_2d(f, X):
 
         return grad
 
-
+@jit
 def numerical_gradient(f, x):
     h = 1e-4  # 0.0001
     grad = np.zeros_like(x)

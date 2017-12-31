@@ -15,6 +15,7 @@ from mnist import load_mnist
 import matplotlib.pyplot as plt
 from mnist import load_mnist
 from n_layer_net import NLayerNet
+import time
 
 
 def main(layer_num):
@@ -23,7 +24,7 @@ def main(layer_num):
 
     network = NLayerNet(layer_num, input_size = 784, hidden_size = 50, output_size = 10)
 
-    iters_num = 1000  # 繰り返しの回数を適宜設定する
+    iters_num = 100  # 繰り返しの回数を適宜設定する
     train_size = x_train.shape[0]
     batch_size = 100
     learning_rate = 0.1
@@ -41,6 +42,7 @@ def main(layer_num):
 
 
     for i in range(iters_num):
+        print("iters_num",i)
         batch_mask = np.random.choice(train_size, batch_size)
         x_batch = x_train[batch_mask]
         t_batch = t_train[batch_mask]
@@ -63,6 +65,8 @@ def main(layer_num):
             test_acc_list.append(test_acc)
             print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
 
+    test_acc = network.accuracy(x_test, t_test)
+    print(" test acc | "  + str(test_acc))
     # グラフの描画
     markers = {'train': 'o', 'test': 's'}
     x = np.arange(len(train_acc_list))
@@ -77,4 +81,7 @@ def main(layer_num):
 if __name__ == '__main__':
     layer_num = int(input("Input number of layers"))
     print("layer_num:",layer_num)
+    start = time.time()
     main(layer_num)
+    elapsed_time = time.time() - start
+    print ("elapsed_time:{0}".format(elapsed_time) + "[sec]")

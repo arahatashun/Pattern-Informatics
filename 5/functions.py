@@ -19,6 +19,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."""
 
 import numpy as np
+from numba import double
+from numba.decorators import jit
 
 
 def identity_function(x):
@@ -28,7 +30,7 @@ def identity_function(x):
 def step_function(x):
     return np.array(x > 0, dtype=np.int)
 
-
+@jit('double[:,:](double[:,:])')
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
@@ -46,7 +48,7 @@ def relu_grad(x):
     grad[x >= 0] = 1
     return grad
 
-
+@jit
 def softmax(x):
     if x.ndim == 2:
         x = x.T

@@ -13,7 +13,7 @@ from gradient import numerical_gradient
 
 class ThreeLayerNet:
 
-    def __init__(self, layer_num,input_size, hidden_size = 100, output_size, weight_init_std = 0.01):
+    def __init__(self, layer_num = 2,input_size, hidden_size = 100, output_size, weight_init_std = 0.01):
         # 重みの初期化
         self.layer_num =layer_num
         self.input_size = input_size

@@ -11,9 +11,9 @@ import numpy as np
 from functions import sigmoid, softmax, cross_entropy_error
 from gradient import numerical_gradient
 
-class ThreeLayerNet:
+class NLayerNet:
 
-    def __init__(self, layer_num = 2,input_size, hidden_size = 100, output_size, weight_init_std = 0.01):
+    def __init__(self, layer_num, input_size, output_size, hidden_size = 100, weight_init_std = 0.01):
         # 重みの初期化
         self.layer_num =layer_num
         self.input_size = input_size
@@ -56,11 +56,12 @@ class ThreeLayerNet:
         :param x:input_size matrix
         :return: output_size matrix
         """
+        input = x
         for i in range(self.layer_num):
-            ouput = np.dot(input, self.weights[i]) + self.bias[i]
+            output = np.dot(input, self.weights[i]) + self.bias[i]
             input = sigmoid(output)
 
-        output = np.dot(input, weights[-1])+bias[-1]
+        output = np.dot(input, self.weights[-1])+self.bias[-1]
         y = softmax(ouput)
         return y
 

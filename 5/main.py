@@ -4,7 +4,7 @@
 
 実装にあたっては『ゼロから作る Deep Learning』及びそのリポジトリ
 https://github.com/oreilly-japan/deep-learning-from-scratchの
-TwoLayerNetを参考にした.
+train_neuralnet.pyを参考にした.
 """
 
 import os, sys
@@ -17,7 +17,7 @@ from mnist import load_mnist
 from n_layer_net import NLayerNet
 
 
-def main():
+def main(layer_num):
     # データの読み込み
     (x_train, t_train), (x_test, t_test) = load_mnist(normalize = True, one_hot_label = True)
 
@@ -33,30 +33,35 @@ def main():
 
     train_acc_list = []
     test_acc_list = []
+    """epoch.
 
+    1epochが学習において訓練データをすべて使いきったことに対応
+    """
     iter_per_epoch = max(train_size / batch_size, 1)
+
 
     for i in range(iters_num):
         batch_mask = np.random.choice(train_size, batch_size)
         x_batch = x_train[batch_mask]
         t_batch = t_train[batch_mask]
 
-    # 勾配の計算
-    weight_grads, bias_grads = network.numerical_gradient(x_batch, t_batch)
+        # 勾配の計算
+        weight_grads, bias_grads = network.numerical_gradient(x_batch, t_batch)
 
-    # パラメータの更新
-    for key in ('W1', 'b1', 'W2', 'b2'):
-        network.params[key] -= learning_rate * grad[key]
+        # パラメータの更新
+        for i in range(layer_num):
+            network.weights -= learning_rate * weight_grads
+            network.bias -= learning_rate * bias_grads
 
-    loss = network.loss(x_batch, t_batch)
-    train_loss_list.append(loss)
+        loss = network.loss(x_batch, t_batch)
+        train_loss_list.append(loss)
 
-    if i % iter_per_epoch == 0:
-        train_acc = network.accuracy(x_train, t_train)
-        test_acc = network.accuracy(x_test, t_test)
-        train_acc_list.append(train_acc)
-        test_acc_list.append(test_acc)
-        print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
+        if i % iter_per_epoch == 0:
+            train_acc = network.accuracy(x_train, t_train)
+            test_acc = network.accuracy(x_test, t_test)
+            train_acc_list.append(train_acc)
+            test_acc_list.append(test_acc)
+            print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
 
     # グラフの描画
     markers = {'train': 'o', 'test': 's'}
@@ -70,5 +75,5 @@ def main():
     plt.show()
 
 if __name__ == '__main__':
-    layer_num = input("Input number of layers")
+    layer_num = int(input("Input number of layers"))
     main(layer_num)

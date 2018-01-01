@@ -24,7 +24,7 @@ def main(layer_num):
 
     network = NLayerNet(layer_num, input_size = 784, hidden_size = 50, output_size = 10)
 
-    iters_num = 100  # 繰り返しの回数を適宜設定する
+    iters_num = 1000  # 繰り返しの回数を適宜設定する
     train_size = x_train.shape[0]
     batch_size = 100
     learning_rate = 0.1
@@ -76,6 +76,7 @@ def main(layer_num):
     plt.ylabel("accuracy")
     plt.ylim(0, 1.0)
     plt.legend(loc='lower right')
+    plt.savefig(str(layer_num))
     plt.show()
 
 if __name__ == '__main__':

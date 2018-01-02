@@ -24,9 +24,9 @@ def main(layer_num):
 
     network = NLayerNet(layer_num, input_size = 784, hidden_size = 50, output_size = 10)
 
-    iters_num = 1000  # 繰り返しの回数を適宜設定する
+    iters_num = 100  # 繰り返しの回数を適宜設定する
     train_size = x_train.shape[0]
-    batch_size = 100
+    batch_size = 1000
     learning_rate = 0.1
 
     train_loss_list = []
@@ -38,7 +38,8 @@ def main(layer_num):
 
     1epochが学習において訓練データをすべて使いきったことに対応
     """
-    iter_per_epoch = max(train_size / batch_size, 1)
+    iter_per_epoch = max(train_size / batch_size/10, 1)
+    print(iter_per_epoch)
 
 
     for i in range(iters_num):
@@ -72,12 +73,12 @@ def main(layer_num):
     x = np.arange(len(train_acc_list))
     plt.plot(x, train_acc_list, label='train acc')
     plt.plot(x, test_acc_list, label='test acc', linestyle='--')
-    plt.xlabel("epochs")
+    plt.xlabel("1/10epochs")
     plt.ylabel("accuracy")
     plt.ylim(0, 1.0)
     plt.legend(loc='lower right')
     plt.savefig(str(layer_num))
-    plt.show()
+    #  plt.show()
 
 if __name__ == '__main__':
     layer_num = int(input("Input number of layers"))

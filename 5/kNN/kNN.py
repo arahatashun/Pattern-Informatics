@@ -24,19 +24,19 @@ class kNN:
     def predict(self, test):
 
         diff = self.train_data - test
-        print("diff shape",diff.shape)
+        # print("diff shape",diff.shape)
         distance = np.linalg.norm(diff, axis = 2)
-        print("distance shape", distance.shape)
+        # print("distance shape", distance.shape)
         nearest_neighborhoods = \
         np.array([self.label[np.argsort(distance[i])[:(self.k)]] for i in range(distance.shape[0])])
         # print(k)
-        print("nn shape",nearest_neighborhoods.shape)
+        # print("nn shape",nearest_neighborhoods.shape)
         summation = nearest_neighborhoods.sum(axis= 1)
-        print("sum", summation)
-        print("sum shape",summation.shape)
+        # print("sum", summation)
+        # print("sum shape",summation.shape)
         modal  = np.argmax(summation, axis = 1)
 
-        print(modal)
+        # print(modal)
         return modal
 
     def accuracy(self, x, t):
@@ -47,20 +47,26 @@ class kNN:
         :return:認識精度
         """
         y = self.predict(x)
+        """
         print("y",y)
         print("y.dtype", y.dtype)
         print("y.shape", y.shape)
         print(type(y))
+        """
         t = np.argmax(t, axis = 1)
+        """
         print("t",t)
         print("t.dtype", t.dtype)
         print("t.shape", t.shape)
         print(type(t))
         print(np.equal(y,t))
+        """
         correct = np.sum(y == t)
+        """
         print("y[1]", y[1])
         print("t[1]", t[1])
         print("correct num",correct)
+        """
         accuracy = correct / float(x.shape[0])
         return accuracy
 
@@ -72,14 +78,20 @@ def main(k):
     print(x_test.shape)
     batch_size =11
     iterations = int(t_test.shape[0]/batch_size)
+    print("iterations",iterations)
+    overall_rate = 0
     for i in range(iterations):
         x_test_batch = x_test[i*batch_size:(i+1)*batch_size]
         t_test_batch = t_test[i*batch_size:(i+1)*batch_size]
-        print("batch shape",x_test_batch.shape)
+        # print("batch shape",x_test_batch.shape)
         x_test_batch = np.reshape(x_test_batch, (x_test_batch.shape[0], 1, x_test_batch.shape[1]))
-        print("batch shape",x_test_batch.shape)
+        #print("batch shape",x_test_batch.shape)
         rate = network.accuracy(x_test_batch, t_test_batch)
+        print("iteration",i)
         print("rate", rate)
+        overall_rate += rate/iterations
+
+    print("overall_rate",overall_rate)
 
 if __name__ == '__main__':
     k = int(input("Input k"))

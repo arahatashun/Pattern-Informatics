@@ -14,7 +14,6 @@ sys.path.append(os.pardir)
 import numpy as np
 from mnist import load_mnist
 import matplotlib.pyplot as plt
-from mnist import load_mnist
 from n_layer_net import NLayerNet
 import time
 
@@ -22,7 +21,7 @@ import time
 def main(layer_num):
     # データの読み込み
     (x_train, t_train), (x_test, t_test) = load_mnist(normalize = True, one_hot_label = True)
-
+    # print(x_train.shape)
     network = NLayerNet(layer_num, input_size = 784, hidden_size = 50, output_size = 10)
 
     iters_num = 2000  # 繰り返しの回数を適宜設定する

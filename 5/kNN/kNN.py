@@ -24,15 +24,17 @@ class kNN:
     def predict(self, test):
 
         diff = self.train_data - test
-        # print("diff",diff)
-        distance = np.linalg.norm(diff, axis = 0)
-        # print("distance", distance.shape)
-        nearest_neighborhoods = self.label[np.argsort(distance)[:(self.k)]]
+        print("diff shape",diff.shape)
+        distance = np.linalg.norm(diff, axis = 2)
+        print("distance shape", distance.shape)
+        nearest_neighborhoods = \
+        np.array([self.label[np.argsort(distance[i])[:(self.k)]] for i in range(distance.shape[0])])
         # print(k)
-        print(nearest_neighborhoods)
-        sum = nearest_neighborhoods.sum(axis= 0)
-        print(sum)
-        modal  = np.argmax(sum)
+        print("nn shape",nearest_neighborhoods.shape)
+        summation = nearest_neighborhoods.sum(axis= 1)
+        print("sum", summation)
+        print("sum shape",summation.shape)
+        modal  = np.argmax(summation, axis = 0)
 
         print(modal)
         return modal
@@ -45,7 +47,8 @@ class kNN:
         :return:認識精度
         """
         y = self.predict(x)
-        y = np.argmax(y, axis=1)
+        print("y",y)
+        y = np.argmax(y, axis=0)
         t = np.argmax(t, axis=1)
 
         accuracy = np.sum(y == t) / float(x.shape[0])
@@ -56,6 +59,8 @@ class kNN:
 def main(k):
     (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
     network = kNN(x_train, t_train, k)
+    print(x_test.shape)
+    x_test = x_test[:9]
     print(x_test.shape)
     x_test = np.reshape(x_test, (x_test.shape[0], 1, x_test.shape[1]))
     print(x_test.shape)

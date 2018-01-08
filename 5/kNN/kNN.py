@@ -34,7 +34,7 @@ class kNN:
         summation = nearest_neighborhoods.sum(axis= 1)
         print("sum", summation)
         print("sum shape",summation.shape)
-        modal  = np.argmax(summation, axis = 0)
+        modal  = np.argmax(summation, axis = 1)
 
         print(modal)
         return modal
@@ -48,10 +48,20 @@ class kNN:
         """
         y = self.predict(x)
         print("y",y)
-        y = np.argmax(y, axis=0)
-        t = np.argmax(t, axis=1)
-
-        accuracy = np.sum(y == t) / float(x.shape[0])
+        print("y.dtype", y.dtype)
+        print("y.shape", y.shape)
+        print(type(y))
+        t = np.argmax(t, axis = 1)
+        print("t",t)
+        print("t.dtype", t.dtype)
+        print("t.shape", t.shape)
+        print(type(t))
+        print(np.equal(y,t))
+        correct = np.sum(y == t)
+        print("y[1]", y[1])
+        print("t[1]", t[1])
+        print("correct num",correct)
+        accuracy = correct / float(x.shape[0])
         return accuracy
 
 
@@ -60,12 +70,16 @@ def main(k):
     (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
     network = kNN(x_train, t_train, k)
     print(x_test.shape)
-    x_test = x_test[:9]
-    print(x_test.shape)
-    x_test = np.reshape(x_test, (x_test.shape[0], 1, x_test.shape[1]))
-    print(x_test.shape)
-    rate = network.accuracy(x_test, t_test)
-    print(rate)
+    batch_size =11
+    iterations = int(t_test.shape[0]/batch_size)
+    for i in range(iterations):
+        x_test_batch = x_test[i*batch_size:(i+1)*batch_size]
+        t_test_batch = t_test[i*batch_size:(i+1)*batch_size]
+        print("batch shape",x_test_batch.shape)
+        x_test_batch = np.reshape(x_test_batch, (x_test_batch.shape[0], 1, x_test_batch.shape[1]))
+        print("batch shape",x_test_batch.shape)
+        rate = network.accuracy(x_test_batch, t_test_batch)
+        print("rate", rate)
 
 if __name__ == '__main__':
     k = int(input("Input k"))

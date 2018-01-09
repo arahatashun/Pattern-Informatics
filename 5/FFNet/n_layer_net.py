@@ -3,13 +3,14 @@
 """3 layer neural network.
 
 実装にあたっては『ゼロから作る Deep Learning』及びそのリポジトリ
-https://github.com/oreilly-japan/deep-learning-from-scratchの
-TwoLayerNetを参考にした.
+https://github.com/oreilly-japan/deep-learning-from-scratch
+のTwoLayerNetを参考にした.
 """
 
 import numpy as np
-from functions import sigmoid, softmax, cross_entropy_error
 from gradient import numerical_gradient
+from collections import OrderedDict
+from layers import Affine, Relu, Sigmoid, SoftmaxWithLoss
 
 class NLayerNet:
 
@@ -24,6 +25,20 @@ class NLayerNet:
         self._make_weights()
         self.bias = []
         self._make_bias()
+        self._make_layers()
+
+
+    def _make_layers(self):
+        self.layers = []
+        for i in range(self.layer_num):
+            self.layers.append(Affine(self.weights[i], self.bias[i]))
+
+            if i == self.layer_num -1:
+                pass
+            else :
+                self.layers.append(Relu())
+
+        self.lastLayer = SoftmaxWithLoss()
 
 
     def _make_weights(self):
@@ -51,22 +66,16 @@ class NLayerNet:
             else:
                 self.bias.append(np.zeros(self.hidden_size))
 
+
     def predict(self, x):
         """ predict.
         :param x:input_size matrix
         :return: output_size matrix
         """
-        input_matrix = x
-        for i in range(self.layer_num-1):
-            output = np.dot(input_matrix, self.weights[i]) + self.bias[i]
-            # print("iteration", output.shape)
-            input_matrix = sigmoid(output)
+        for layer in self.layers:
+            x = layer.forward(x)
 
-        # print(input_matrix.shape)
-        dot_product = np.dot(input_matrix, self.weights[-1])
-        output = dot_product + self.bias[-1]
-        y = softmax(output)
-        return y
+        return x
 
     def loss(self, x, t):
         """損失関数の値を求める
@@ -77,7 +86,7 @@ class NLayerNet:
         """
         y = self.predict(x)
 
-        return cross_entropy_error(y, t)
+        return self.lastLayer.forward(y, t)
 
     def accuracy(self, x, t):
         """認識精度を求める.
@@ -93,20 +102,21 @@ class NLayerNet:
         accuracy = np.sum(y == t) / float(x.shape[0])
         return accuracy
 
+    def gradient(self, x, t):
+        self.loss(x, t)
+        # backward
+        dout = 1
+        dout = self.lastLayer.backward(dout)
 
-    def numerical_gradient(self, x, t):
-        """重みパラメータに対する勾配
+        for layer in reversed(self.layers):
+            dout = layer.backward(dout)
 
-        :param x:input data
-        :param t:label
-        :return weight_grads:list
-        :return bias_grads:list
-        """
-        loss_W = lambda W: self.loss(x, t)
+        # return
         weight_grads = []
         bias_grads = []
         for i in range(self.layer_num):
-            weight_grads.append(numerical_gradient(loss_W, self.weights[i]))
-            bias_grads.append(numerical_gradient(loss_W, self.bias[i]))
+            Affine_layer = self.layers[2*i]
+            weight_grads.append(Affine_layer.dW)
+            bias_grads.append(Affine_layer.db)
 
         return weight_grads, bias_grads

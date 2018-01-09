@@ -24,11 +24,11 @@ def main(layer_num):
     # print(x_train.shape)
     network = NLayerNet(layer_num, input_size = 784, hidden_size = 50, output_size = 10)
 
-    iters_num = 2000  # 繰り返しの回数を適宜設定する
+    iters_num = 3000  # 繰り返しの回数を適宜設定する
     train_size = x_train.shape[0]
     print("train_size", train_size)
     batch_size = 100
-    learning_rate = 1
+    learning_rate = 1.0
 
     train_loss_list = []
 
@@ -43,7 +43,7 @@ def main(layer_num):
         t_batch = t_train[batch_mask]
 
         # 勾配の計算
-        weight_grads, bias_grads = network.numerical_gradient(x_batch, t_batch)
+        weight_grads, bias_grads = network.gradient(x_batch, t_batch)
 
         # パラメータの更新
         for i in range(layer_num):

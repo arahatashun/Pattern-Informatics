@@ -6,6 +6,7 @@ https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/dataset/
 を用いた
 """
 import os, sys
+
 sys.path.append(os.pardir)
 import numpy as np
 from mnist import load_mnist

@@ -1,3 +1,4 @@
+# coding:utf-8
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -9,7 +10,7 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 df = pd.read_csv("iris.csv")
 data = df.values
 numberOfData = data.shape[0]
-convergence_threshold = 0.0001
+convergence_threshold = 0.1
 
 
 def addRand2List(list):
@@ -34,7 +35,7 @@ def getDistance(vector_A, vector_B):
     distance_list = []
     # print(vector_A)
     # print(vector_B)
-    for i in range(4):
+    for i in range(len(vector_A)-1):
         square = (vector_A[i] - vector_B[i]) ** 2
         distance_list.append(square)
     distance = np.sum(distance_list) ** (1 / 2)
@@ -50,7 +51,6 @@ def ImprovedInitialSelect(k):
     for j in range(k - 1):
         distance = []
         for i in range(tmp_data.shape[0]):
-            # j+1点からの距離の和が必要
             distance.append(getDistance(data[first], tmp_data[i]))
             if j >= 1:
                 for k in range(j):
@@ -186,6 +186,7 @@ def plotimproved(k_list, ax):
 
 
 def plotscatter(k):
+    """
     old_centre = getCenter(getInitalRepresentative(k))
     new_centre = getCenter(old_centre)
     convergence = calcConvergence(old_centre, new_centre)
@@ -201,8 +202,8 @@ def plotscatter(k):
     ax1 = fig.add_subplot(121, projection='3d')
     ax2 = fig.add_subplot(122, projection='3d')
     plotrandom(new_centre, ax1)
-    print('収束するまでの回数=', convergence_count)
-
+    print("収束するまでの回数",convergence_count)
+    """
     initial = ImprovedInitialSelect(k)
     print(initial)
     old_centre = getCenter(initial)
@@ -216,7 +217,7 @@ def plotscatter(k):
         old_centre = new_centre
         convergence_count = convergence_count + 1
 
-    print('収束するまでの回数=', convergence_count)
+    print("収束するまでの回数=",convergence_count)
     plotimproved(new_centre, ax2)
     filename = "../picture/" + str(k) + ".png"
     plt.savefig(filename)

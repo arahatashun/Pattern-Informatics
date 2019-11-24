@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 df = pd.read_csv("iris.csv")
 data = df.values
 numberOfData = data.shape[0]
-convergence_threshold = 0.1
+convergence_threshold = 0.001
 
 
 def addRand2List(list):
